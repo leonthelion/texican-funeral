@@ -55,3 +55,8 @@ WITH (
 );
 ALTER TABLE users
   OWNER TO test;
+
+
+
+postgresql rolename: test; password: test; dbname: test
+
