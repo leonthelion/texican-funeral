@@ -1,0 +1,138 @@
+<% include header %>
+
+
+<script type="text/javascript">
+	$(function(){
+		
+		$("#btnNewBlogEntry").click(function(){
+			$('#id-form-group').hide();
+			$('#btnSaveBlogEntry').hide();
+			$('#btnSubmitNewBlogEntry').show();
+			$('#inputTitle').val('');
+			$('#inputText').html('');
+			$('#modalAddBlogEntry').modal('show');
+		});
+		
+		$('#btnSubmitNewBlogEntry').click(function(){
+			$('#modalAddBlogEntry').modal('hide');
+			var data = {
+				title: $('#inputTitle').val(),
+				text: $('#inputText').val()
+			}
+			$.ajax({
+				type: "POST",
+				url: "/newblogentry",
+				data: data,
+				success: function(){
+					console.log("new blog entry submitted");
+					window.location = window.location;
+				}
+			});
+		});
+		
+		<% posts.forEach(function(item){ %>
+		$("#btnDelEntry<%=item.postid %>").click(function(){
+			$.ajax({
+				type: "DELETE",
+				url: "/delentry?id=<%=item.postid %>",
+				success: function(){
+					console.log('entry <%=item.postid %> deleted');
+					window.location = window.location;
+				}
+			});
+		});
+		<% }); %>
+		
+		<% posts.forEach(function(item){ %>
+		$("#btnEditEntry<%=item.postid %>").click(function(){
+			$('#id-form-group').show();
+			$('#id').val('<%=item.postid %>');
+			$('#modalAddBlogEntry').modal('show');
+			$('#inputTitle').val(unescape('<%=item.title %>'));
+			$('#inputText').html(unescape('<%=item.content %>').split('<br />').join('\n'));
+			$('#btnSaveBlogEntry').show();
+			$('#btnSubmitNewBlogEntry').hide();
+		});
+		<% }); %>
+		
+		$('#btnSaveBlogEntry').click(function(){
+			var data = {
+				id: $('#id').val(),
+				title: $('#inputTitle').val(),
+				text: $('#inputText').val()
+			}
+			$.ajax({
+				type: "PUT",
+				url: "/editentry",
+				data: data,
+				success: function(){
+					console.log("entry updated");
+					window.location = window.location;
+				}
+			});
+		});
+		
+	});
+</script>
+
+<style type="text/css">
+	#modalAddBlogEntry {
+		color: black;
+	}
+</style>
+
+<div id="mainContent">
+	
+  <div class="modal fade" id="modalAddBlogEntry">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">New Blog Entry</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" role="form">
+          	<div class="form-group" id="id-form-group">
+          	  <label for="id" class="col-sm-2 control-label">ID</label>
+          	  <div class="col-sm-10">
+          	  	<input type="text/plain" class="form-control" id="id" disabled>
+          	  </div>
+          	</div>
+          	<div class="form-group">
+          	  <label for="inputTitle" class="col-sm-2 control-label">Title</label>
+          	  <div class="col-sm-10">
+          	  	<input type="text/plain" class="form-control" id="inputTitle" placeholder="Title">
+          	  </div>
+          	</div>
+          	<div class="form-group">
+          	  <label for="inputText" class="col-sm-2 control-label">Text</label>
+          	  <div class="col-sm-10">
+          	  	<textarea rows="5" id="inputText" class="form-control" placeholder="Text"></textarea>
+          	  </div>
+          	</div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveBlogEntry">Save</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitNewBlogEntry">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+	
+	
+	
+	<button id="btnNewBlogEntry" class="btn btn-default">new blog entry</button>
+	
+	<% posts.forEach(function(item){ %>
+		<h2><%=unescape(item.title) %></h2>
+		<h6><%=item.day %>.<%=item.month %>.<%=item.year %></h6>
+		<p><%-unescape(item.content) %></p>
+		<button type="button" class="btn btn-danger" id="btnDelEntry<%=item.postid %>">Delete</button>
+		<button type="button" class="btn btn-primary" id="btnEditEntry<%=item.postid %>">Edit</button>
+		<br/><br/><br/>
+	<% }); %>
+	
+</div>
+<% include footer %>

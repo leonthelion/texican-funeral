@@ -1,0 +1,15 @@
+{
+  "name": "texican-funeral",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "3.4.7",
+    "ejs": "*",
+    "pg": "2.8.4",
+    "pg-query": "0.7.0",
+    "node-uuid": "1.4.1"
+  }
+}

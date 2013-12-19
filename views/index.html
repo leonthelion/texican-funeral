@@ -1,0 +1,12 @@
+<% include header %>
+
+<div id="mainContent">
+	<% posts.forEach(function(item){ %>
+		<h2><%=unescape(item.title) %></h2>
+		<h6><%=item.day %>.<%=item.month %>.<%=item.year %></h6>
+		<p><%-unescape(item.content) %></p>
+		<br/>
+	<% }); %>
+</div>
+
+<% include footer %>
