@@ -95,6 +95,26 @@ server.get('/media', function(req, res){
 	});
 });
 
+server.get('/image/:id', function(req, res){
+	query("SELECT path FROM images WHERE id=" + req.params.id, function(err, rows, result){
+		if (err) throw err;
+		console.log(rows);
+		if (rows.length > 0) {
+			fs.readFile(rows[0].path, "binary", function(err, data){
+				if (err) {
+					throw err;
+				} else {
+					res.writeHead(200, {"Content-Type": "image/jpg"});
+					res.write(data, "binary");
+					res.end();
+				}
+			});
+		} else {
+			res.render('error/404');
+		}
+	});
+});
+
 server.post('/login', function(req, res){
 	query("SELECT * FROM users WHERE password='" + escape(req.body.password) + "' AND username='" + req.body.username + "'", function(err, rows, result){
 		if (err) throw err;
@@ -185,26 +205,6 @@ server.post('/admin/image', function(req, res){
 	});
 
 
-});
-
-server.get('/image/:id', function(req, res){
-	query("SELECT path FROM images WHERE id=" + req.params.id, function(err, rows, result){
-		if (err) throw err;
-		console.log(rows);
-		if (rows.length > 0) {
-			fs.readFile(rows[0].path, "binary", function(err, data){
-				if (err) {
-					throw err;
-				} else {
-					res.writeHead(200, {"Content-Type": "image/jpg"});
-					res.write(data, "binary");
-					res.end();
-				}
-			});
-		} else {
-			res.render('error/404');
-		}
-	});
 });
 
 server.del('/admin/image/:id', function(req, res){
