@@ -55,6 +55,25 @@ WITH (
 );
 ALTER TABLE users
   OWNER TO test;
+  
+  
+
+#####################
+
+
+
+CREATE TABLE images
+(
+  id serial NOT NULL,
+  path character varying(255),
+  name character varying(255),
+  CONSTRAINT images_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE images
+  OWNER TO test;
 
 
 
