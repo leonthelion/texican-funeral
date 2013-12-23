@@ -21,7 +21,7 @@
 			}
 			$.ajax({
 				type: "POST",
-				url: "/newblogentry",
+				url: "/admin/newblogentry",
 				data: data,
 				success: function(){
 					console.log("new blog entry submitted");
@@ -34,7 +34,7 @@
 		$("#btnDelEntry<%=item.postid %>").click(function(){
 			$.ajax({
 				type: "DELETE",
-				url: "/delentry?id=<%=item.postid %>",
+				url: "/admin/delentry?id=<%=item.postid %>",
 				success: function(){
 					console.log('entry <%=item.postid %> deleted');
 					window.location = window.location;
@@ -63,7 +63,7 @@
 			}
 			$.ajax({
 				type: "PUT",
-				url: "/editentry",
+				url: "/admin/editentry",
 				data: data,
 				success: function(){
 					console.log("entry updated");

@@ -1,0 +1,29 @@
+<% include header %>
+
+<div id="mainContent">
+	
+	<table class="table">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% images.forEach(function(item){ %>
+				<tr>
+					<td>
+						<%=item.id %>
+					</td>
+					<td>
+  						<a href="/image/<%=item.id %>" class="list-group-item"><%=item.name.split('.')[0] %></a>
+  					</td>
+  				</tr>
+  			<% }); %>
+  		</tbody>
+  	</table>
+  	
+
+</div>
+
+<% include footer %>
