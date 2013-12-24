@@ -11,9 +11,7 @@
 		<script type="text/javascript">
 			$(function(){
 				$('#logoutBtn').click(function(){
-					console.log('button was clicked');
 					$.post('/admin/logout', function(){
-						console.log('success');
 						location.pathname = '/';
 					});
 				});

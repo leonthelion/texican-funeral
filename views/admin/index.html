@@ -49,7 +49,7 @@
 			$('#id').val('<%=item.id %>');
 			$('#modalAddBlogEntry').modal('show');
 			$('#inputTitle').val(unescape('<%=item.title %>'));
-			$('#inputText').html(unescape('<%=item.content %>').split('<br />').join('\n'));
+			$('#inputText').html(unescape('<%=item.content %>').replace(/<br \/>/g, '\n'));
 			$('#btnSaveBlogEntry').show();
 			$('#btnSubmitNewBlogEntry').hide();
 		});
@@ -135,4 +135,6 @@
 	<% }); %>
 	
 </div>
+
+
 <% include footer %>

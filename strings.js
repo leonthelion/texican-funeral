@@ -1,11 +1,11 @@
 var strings = {};
 
 strings.index = {
-		title: "Test"
+	title: "Test"
 };
 
 strings.admin = {
-		title: "Test"
+	title: "Test"
 };
 
 

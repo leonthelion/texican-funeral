@@ -6,7 +6,14 @@ var express = require('express')
   , pg = require('pg')
   , query = require('pg-query')
   , uuid = require('node-uuid')
+  , mime = require('mime')
   , config = require('./config');
+
+
+Array.prototype.last = function(){
+    return this[this.length - 1];
+};
+
 
 //creating the server object
 var server = express();
@@ -35,10 +42,10 @@ server.use('/admin/image', function(req, res, next){
 	if (req.method != 'POST') {
 		next();
 	} else {
-		if (req.files.image.name.search(/(.jpg$|.jpeg$|.png$)/i) !== -1) {
-			next();
-		} else {
+		if (req.files.image.name.search(/(.jpg$|.jpeg$|.png$|.gif$)/i) === -1) {
 			res.render('error/403');
+		} else {
+			next();
 		}
 	}
 });
@@ -174,7 +181,7 @@ server.del('/admin/delentry', function(req, res){
 });
 
 server.put('/admin/editentry', function(req, res){
-	query("UPDATE posts SET title='" + escape(req.body.title) + "', content='" + escape(req.body.text) + "' WHERE id=" + escape(req.body.id), function(err, rows, result){
+	query("UPDATE posts SET title='" + escape(req.body.title) + "', content='" + escape(req.body.text.replace(/\n/g, '<br />')) + "' WHERE id=" + escape(req.body.id), function(err, rows, result){
 		res.end();
 	});
 });
@@ -189,7 +196,7 @@ server.get('/admin/media', function(req, res){
 
 server.post('/admin/image', function(req, res){
 	var tmp_path = req.files.image.path;
-	target_path = path.join(__dirname, '/public/img/') + req.files.image.name;
+	target_path = path.join(__dirname, '/public/img/') + uuid.v1() + '.' + req.files.image.name.split('.').last();
 	
 	fs.rename(tmp_path, target_path, function(err) {
 		if (err) {throw err;}
