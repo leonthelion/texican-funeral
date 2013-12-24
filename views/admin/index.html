@@ -31,12 +31,12 @@
 		});
 		
 		<% posts.forEach(function(item){ %>
-		$("#btnDelEntry<%=item.postid %>").click(function(){
+		$("#btnDelEntry<%=item.id %>").click(function(){
 			$.ajax({
 				type: "DELETE",
-				url: "/admin/delentry?id=<%=item.postid %>",
+				url: "/admin/delentry?id=<%=item.id %>",
 				success: function(){
-					console.log('entry <%=item.postid %> deleted');
+					console.log('entry <%=item.id %> deleted');
 					window.location = window.location;
 				}
 			});
@@ -44,9 +44,9 @@
 		<% }); %>
 		
 		<% posts.forEach(function(item){ %>
-		$("#btnEditEntry<%=item.postid %>").click(function(){
+		$("#btnEditEntry<%=item.id %>").click(function(){
 			$('#id-form-group').show();
-			$('#id').val('<%=item.postid %>');
+			$('#id').val('<%=item.id %>');
 			$('#modalAddBlogEntry').modal('show');
 			$('#inputTitle').val(unescape('<%=item.title %>'));
 			$('#inputText').html(unescape('<%=item.content %>').split('<br />').join('\n'));
@@ -129,8 +129,8 @@
 		<h2><%=unescape(item.title) %></h2>
 		<h6><%=item.day %>.<%=item.month %>.<%=item.year %></h6>
 		<p><%-unescape(item.content) %></p>
-		<button type="button" class="btn btn-danger" id="btnDelEntry<%=item.postid %>">Delete</button>
-		<button type="button" class="btn btn-primary" id="btnEditEntry<%=item.postid %>">Edit</button>
+		<button type="button" class="btn btn-danger" id="btnDelEntry<%=item.id %>">Delete</button>
+		<button type="button" class="btn btn-primary" id="btnEditEntry<%=item.id %>">Edit</button>
 		<br/><br/><br/>
 	<% }); %>
 	

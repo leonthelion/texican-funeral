@@ -4,19 +4,20 @@ texican-funeral
 
 CREATE TABLE posts
 (
-  postid serial NOT NULL,
+  id serial NOT NULL,
   title character varying(255),
   content character varying(10000),
   day integer,
   month integer,
   year integer,
-  CONSTRAINT postid PRIMARY KEY (postid)
+  CONSTRAINT posts_pkey PRIMARY KEY (id)
 )
 WITH (
   OIDS=FALSE
 );
 ALTER TABLE posts
   OWNER TO test;
+
   
 
 #####################
