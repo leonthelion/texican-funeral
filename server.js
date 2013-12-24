@@ -38,11 +38,26 @@ server.set('views', path.join(__dirname, '/views'));
 server.set('view engine', 'html');
 server.use(express.favicon(path.join(__dirname, 'public/img/favicon.ico')));
 server.use(express.bodyParser());
+/*
 server.use('/admin/image', function(req, res, next){
 	if (req.method != 'POST') {
 		next();
 	} else {
 		if (req.files.image.name.search(/(.jpg$|.jpeg$|.png$|.gif$)/i) === -1) {
+			res.render('error/403');
+		} else {
+			next();
+		}
+	}
+});
+*/
+server.use('/admin/image', function(req, res, next){
+	if (req.method != 'POST') {
+		next();
+	} else {
+		if (mime.lookup(req.files.image.path) !== 'image/jpeg' &&
+			mime.lookup(req.files.image.path) !== 'image/png' &&
+			mime.lookup(req.files.image.path) !== 'image/gif') {
 			res.render('error/403');
 		} else {
 			next();
