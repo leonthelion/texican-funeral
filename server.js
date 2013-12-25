@@ -288,7 +288,7 @@ server.get('/initdb', function(req, res){
 			if (err) {throw err;}
 			query("CREATE TABLE users ( id serial NOT NULL, username character varying(255), password character varying(255), CONSTRAINT users_pkey PRIMARY KEY (id) ) WITH ( OIDS=FALSE ); ALTER TABLE users OWNER TO test;", function(err){
 				if (err) {throw err;}
-				query("CREATE TABLE images ( id serial NOT NULL, path character varying(255), name character varying(255), type character varchar(255), CONSTRAINT images_pkey PRIMARY KEY (id) ) WITH ( OIDS=FALSE ); ALTER TABLE images OWNER TO test;", function(err){
+				query("CREATE TABLE images ( id serial NOT NULL, path character varying(255), name character varying(255), type character varying(255), CONSTRAINT images_pkey PRIMARY KEY (id) ) WITH ( OIDS=FALSE ); ALTER TABLE images OWNER TO test;", function(err){
 					if (err) {throw err;}
 					res.redirect('/');
 				});

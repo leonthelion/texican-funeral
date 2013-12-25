@@ -68,6 +68,7 @@ CREATE TABLE images
   id serial NOT NULL,
   path character varying(255),
   name character varying(255),
+  type character varying(255),
   CONSTRAINT images_pkey PRIMARY KEY (id)
 )
 WITH (
