@@ -6,7 +6,8 @@ var express = require('express')
   , pg = require('pg')
   , query = require('pg-query')
   , uuid = require('node-uuid')
-  , mime = require('mime')
+//  , mime = require('mime')
+  , formidable = require('formidable')
   , config = require('./config');
 
 
@@ -14,6 +15,17 @@ Array.prototype.last = function(){
     return this[this.length - 1];
 };
 
+Array.prototype.withoutLast = function(){
+	if (typeof this[0] === 'string') {
+		var result = "";
+		this.slice(0, this.length - 1).forEach(function(item){
+			result += item;
+		});
+		return result;
+	} else {
+		return;
+	}
+};
 
 //creating the server object
 var server = express();
@@ -37,10 +49,12 @@ server.set('port', process.env.PORT || config.web.port);
 server.set('views', path.join(__dirname, '/views'));
 server.set('view engine', 'html');
 server.use(express.favicon(path.join(__dirname, 'public/img/favicon.ico')));
-server.use(express.bodyParser());
+//server.use(express.bodyParser());
+server.use(express.urlencoded());
+server.use(express.json());
 /*
 server.use('/admin/image', function(req, res, next){
-	if (req.method != 'POST') {
+	if (req.method.toUpperCase() != 'POST') {
 		next();
 	} else {
 		if (req.files.image.name.search(/(.jpg$|.jpeg$|.png$|.gif$)/i) === -1) {
@@ -51,8 +65,9 @@ server.use('/admin/image', function(req, res, next){
 	}
 });
 */
+/*
 server.use('/admin/image', function(req, res, next){
-	if (req.method != 'POST') {
+	if (req.method.toUpperCase() != 'POST') {
 		next();
 	} else {
 		if (mime.lookup(req.files.image.path) !== 'image/jpeg' &&
@@ -64,6 +79,7 @@ server.use('/admin/image', function(req, res, next){
 		}
 	}
 });
+*/
 server.use(express.methodOverride());
 server.use(express.cookieParser(config.web.secureKey));
 server.use(express.session());
@@ -124,14 +140,13 @@ server.get('/media', function(req, res){
 });
 
 server.get('/image/:id', function(req, res){
-	query("SELECT path FROM images WHERE id=" + req.params.id, function(err, rows, result){
+	query("SELECT path, type FROM images WHERE id=" + req.params.id, function(err, rows, result){
 		if (err) {{throw err;}}
 		if (rows.length > 0) {
 			fs.readFile(rows[0].path, "binary", function(err, data){
 				if (err) {
 					{throw err;}
 				} else {
-					res.writeHead(200, {"Content-Type": "image/jpg"});
 					res.write(data, "binary");
 					res.end();
 				}
@@ -210,6 +225,7 @@ server.get('/admin/media', function(req, res){
 });
 
 server.post('/admin/image', function(req, res){
+	/*
 	var tmp_path = req.files.image.path;
 	target_path = path.join(__dirname, '/public/img/') + uuid.v1() + '.' + req.files.image.name.split('.').last();
 	
@@ -221,8 +237,33 @@ server.post('/admin/image', function(req, res){
 			res.redirect('admin/media');
 		});
 	});
+	*/
+
+	var form = new formidable.IncomingForm();
+
+	form.uploadDir = path.join(__dirname, 'public/upload');
+
+	form.on('fileBegin', function(name, file){
+		file.path = form.uploadDir + '\\' + uuid.v1();
+	});
 
 
+	form.parse(req, function(err, fields, files) {
+    	if (err) {throw err;}
+
+    	if (files.image.type !== 'image/jpeg' &&
+			files.image.type !== 'image/png' &&
+			files.image.type !== 'image/gif') {
+    		fs.unlink(files.image.path, function(){
+    			res.render('error/403');
+    		});
+		} else {
+    		query("INSERT INTO images (path, name, type) VALUES ('" + files.image.path + "', '" + files.image.name.split('.').withoutLast() + "', '" + files.image.name.split('.').last() + "')", function(err, rows, result){
+				if (err) {throw err;}
+				res.redirect('admin/media');
+			});
+		}
+    });
 });
 
 server.del('/admin/image/:id', function(req, res){
@@ -247,7 +288,7 @@ server.get('/initdb', function(req, res){
 			if (err) {throw err;}
 			query("CREATE TABLE users ( id serial NOT NULL, username character varying(255), password character varying(255), CONSTRAINT users_pkey PRIMARY KEY (id) ) WITH ( OIDS=FALSE ); ALTER TABLE users OWNER TO test;", function(err){
 				if (err) {throw err;}
-				query("CREATE TABLE images ( id serial NOT NULL, path character varying(255), name character varying(255), CONSTRAINT images_pkey PRIMARY KEY (id) ) WITH ( OIDS=FALSE ); ALTER TABLE images OWNER TO test;", function(err){
+				query("CREATE TABLE images ( id serial NOT NULL, path character varying(255), name character varying(255), type character varchar(255), CONSTRAINT images_pkey PRIMARY KEY (id) ) WITH ( OIDS=FALSE ); ALTER TABLE images OWNER TO test;", function(err){
 					if (err) {throw err;}
 					res.redirect('/');
 				});
