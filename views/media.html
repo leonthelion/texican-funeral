@@ -1,7 +1,7 @@
 <% include header %>
 
 <div id="mainContent">
-	
+	<!--
 	<table class="table">
 		<thead>
 			<tr>
@@ -22,7 +22,17 @@
   			<% }); %>
   		</tbody>
   	</table>
-  	
+	-->
+
+	<h1>Gallery</h1>
+	<br/>
+
+
+	<% images.forEach(function(item){ %>
+  		<a href="/upload/<%=item.path.split('\\')[item.path.split('\\').length-1] %>" data-lightbox="image" title="Test" class="example-image">
+  			<img src="/upload/<%=item.path.split('\\')[item.path.split('\\').length-1] %>" data-lightbox="<%=item.path.split('\\')[item.path.split('\\').length-1] %>" width="150" height="150">
+  		</a>
+  	<% }); %>
 
 </div>
 

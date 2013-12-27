@@ -107,19 +107,18 @@ server.get('/', function(req, res){
 	});
 });
 
-server.get('/loremipsum', function(req, res){
-	res.render('loremipsum');
-});
-
 server.get('/cicero', function(req, res){
+
 	res.render('cicero');
 });
 
 server.get('/login', function(req, res){
+
 	res.render('login');
 });
 
 server.get('/imprint', function(req, res){
+	
 	res.render('imprint');
 });
 
@@ -141,7 +140,7 @@ server.get('/media', function(req, res){
 
 server.get('/image/:id', function(req, res){
 	query("SELECT path, type FROM images WHERE id=" + req.params.id, function(err, rows, result){
-		if (err) {{throw err;}}
+		if (err) {throw err;}
 		if (rows.length > 0) {
 			fs.readFile(rows[0].path, "binary", function(err, data){
 				if (err) {
@@ -242,9 +241,10 @@ server.post('/admin/image', function(req, res){
 	var form = new formidable.IncomingForm();
 
 	form.uploadDir = path.join(__dirname, 'public/upload');
+	form.keepExtension = true;
 
 	form.on('fileBegin', function(name, file){
-		file.path = form.uploadDir + '\\' + uuid.v1();
+		file.path = form.uploadDir + '\\' + uuid.v1() + '.' + file.name.split('.').last();
 	});
 
 
