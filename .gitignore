@@ -17,6 +17,7 @@ local.properties
 .loadpath
 node_modules
 backup
+public/upload
 
 # External tool builders
 .externalToolBuilders/
